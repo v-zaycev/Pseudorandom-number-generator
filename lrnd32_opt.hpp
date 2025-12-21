@@ -1,23 +1,25 @@
-#ifndef LRND32_H
-#define LRND32_H
+#ifndef LRND32_OPT
+#define LRND32_OPT
 #include <bitset>
 #include <cstddef>
+#include <emmintrin.h>
+#include <immintrin.h>
 
 namespace zaitsev
 {
   using poly512 = std::bitset< 512 >;
   using poly256 = std::bitset< 256 >;
 
-  class lrnd32_h
+  class lrnd32_opt
   {
   public:
     using result_type = unsigned int;
 
-    lrnd32_h();
-    lrnd32_h(lrnd32_h&&) = default;
-    lrnd32_h(const lrnd32_h&) = default;
-    explicit lrnd32_h(size_t seed);
-    ~lrnd32_h() = default;
+    lrnd32_opt();
+    lrnd32_opt(lrnd32_opt&&) = default;
+    lrnd32_opt(const lrnd32_opt&) = default;
+    explicit lrnd32_opt(size_t seed);
+    ~lrnd32_opt() = default;
 
     static unsigned int max() noexcept;
     static unsigned int min() noexcept;
