@@ -1,6 +1,7 @@
 #include "lrnd32_opt.hpp"
 #include <bitset>
 #include <array>
+#include <iostream>
 
 using poly512 = std::bitset< 512 >;
 using poly256 = std::bitset< 256 >;
@@ -40,6 +41,12 @@ std::array< unsigned short, 3 > form_mod_poly16() noexcept
   mod_poly[1] = 0x8000; //x^31
   return mod_poly;
 }
+
+unsigned long long  form_mod_poly64() noexcept
+{
+  return (1ull << 0) | (1ull << 3) | (1ull << 7) | (1ull << 31);
+}
+
 std::array< std::array< unsigned short, 3 >, 65536 >* compress_mod() noexcept
 {
   std::array< unsigned short, 3 >  mod_poly = form_mod_poly16();
@@ -59,13 +66,38 @@ std::array< std::array< unsigned short, 3 >, 65536 >* compress_mod() noexcept
   return compressed_poly;
 }
 
+std::array< unsigned long long, 256 >* compress_mod64() noexcept
+{
+  std::array< unsigned long long, 256 >* compressed_poly = new std::array< unsigned long long, 256 >();
+  for (size_t i = 0; i < 256; ++i)
+  {
+    unsigned char ii = i;
+    unsigned long long res = 0;
+    unsigned long long  mod_poly = form_mod_poly64() << 1;
+    while (ii != 0)
+    {
+      if (ii & 1)
+      {
+        res ^= mod_poly;
+      }
+      mod_poly <<= 1;
+      ii >>= 1;
+    }
+    (*compressed_poly)[i] = res;
+  }
+  return compressed_poly;
+}
+
+
 std::array< poly512, 256 > form_deg2(const poly512& mod_poly) noexcept;
 poly512 mod_mult(const poly512& mod_poly, const poly512& poly1, const poly512& poly2) noexcept;
 
 const poly512 zaitsev::lrnd32_opt::mod_poly512_ = form_mod_poly< 512 >();
 const poly256 zaitsev::lrnd32_opt::mod_poly256_ = form_mod_poly< 256 >();
 const std::array< unsigned short, 3 > zaitsev::lrnd32_opt::mod_poly_us_ = form_mod_poly16();
+const unsigned long long zaitsev::lrnd32_opt::mod_poly_ull_ = form_mod_poly64();
 const std::array< std::array< unsigned short, 3 >, 65536 >* zaitsev::lrnd32_opt::compressed_mod_poly_us_ = compress_mod();
+const std::array< unsigned long long, 256 >* zaitsev::lrnd32_opt::compressed_mod_poly_ull_ = compress_mod64();
 const std::array< poly512, 256 > zaitsev::lrnd32_opt::deg2_ = form_deg2(lrnd32_opt::mod_poly512_);
 
 zaitsev::lrnd32_opt::lrnd32_opt():
@@ -130,6 +162,33 @@ unsigned int zaitsev::lrnd32_opt::operator()(bool) noexcept
   return generated_number_;
 }
 
+unsigned int zaitsev::lrnd32_opt::operator()(int) noexcept
+{
+  generated_number_ = poly_ull_[0] >> 32;
+  unsigned char compressed_nmb = unsigned char(poly_ull_[0] >> 56);
+  const unsigned long long temp0 =(*compressed_mod_poly_ull_)[compressed_nmb] << 24;
+  compressed_nmb = unsigned char((poly_ull_[0] >> 48) & 0xff);
+  const unsigned long long temp1 = (*compressed_mod_poly_ull_)[compressed_nmb] << 16;
+  compressed_nmb = unsigned char((poly_ull_[0] >> 40) & 0xff);
+  const unsigned long long temp2 = (*compressed_mod_poly_ull_)[compressed_nmb] << 8;
+  compressed_nmb = unsigned char((poly_ull_[0] >> 32) & 0xff);
+  const unsigned long long temp3 = (*compressed_mod_poly_ull_)[compressed_nmb];
+
+  poly_ull_[0] <<= 32;
+  poly_ull_[0] |= poly_ull_[1] >> 32;
+  poly_ull_[1] <<= 32;
+  poly_ull_[1] |= poly_ull_[2] >> 32;
+  poly_ull_[2] <<= 32;
+  poly_ull_[2] |= poly_ull_[3] >> 32;
+
+  poly_ull_[3] <<= 32;
+  poly_ull_[3] ^= temp0;
+  poly_ull_[3] ^= temp1;
+  poly_ull_[3] ^= temp2;
+  poly_ull_[3] ^= temp3;
+  return generated_number_;
+}
+
 void zaitsev::lrnd32_opt::seed(size_t seed)
 {
   poly512 poly{};
@@ -155,7 +214,6 @@ void zaitsev::lrnd32_opt::seed(size_t seed)
   poly <<= 1;
 
   this->poly_ = poly256(poly.to_string().substr(256, 256));
-
   for (size_t i = 0; i < 16; ++i)
   {
     unsigned short temp = 1;
@@ -168,6 +226,22 @@ void zaitsev::lrnd32_opt::seed(size_t seed)
       temp <<= 1;
     }
   }
+
+  for (size_t i = 0; i < 4; ++i)
+  {
+    poly_ull_[3 - i] = 0;
+    unsigned long long temp = 1;
+    for (size_t j = 0; j < 64; ++j)
+    {
+      if (this->poly_[i * 64 + j])
+      {
+        poly_ull_[3 - i] |= temp;
+      }
+      temp <<= 1;
+    }
+  }
+  //std::cout << std::hex << (*compressed_mod_poly_us_)[1][2] << std::endl;
+  //std::cout << std::hex << (*compressed_mod_poly_ull_)[1] << std::endl;
   return;
 }
 

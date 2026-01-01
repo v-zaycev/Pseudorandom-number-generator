@@ -25,6 +25,7 @@ namespace zaitsev
     static unsigned int min() noexcept;
     result_type operator()() noexcept;
     result_type operator()(bool) noexcept;
+    result_type operator()(int) noexcept;
     void seed(size_t seed);
     void discard(size_t seed);
 
@@ -33,10 +34,13 @@ namespace zaitsev
     static const poly512 mod_poly512_;
     static const poly256 mod_poly256_;
     static const std::array< unsigned short, 3 > mod_poly_us_;
+    static const unsigned long long mod_poly_ull_;
     static const std::array< std::array< unsigned short, 3 >, 65536 >* compressed_mod_poly_us_;
+    static const std::array< unsigned long long, 256 >* compressed_mod_poly_ull_;
     static const std::array< poly512, 256 > deg2_;
     poly256 poly_;
     unsigned short poly_us_[16];
+    unsigned long long poly_ull_[4];
     result_type generated_number_;
   };
 }
