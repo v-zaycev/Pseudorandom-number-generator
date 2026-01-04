@@ -2,14 +2,12 @@
 #define LRND32_OPT
 #include <bitset>
 #include <cstddef>
-#include <emmintrin.h>
-#include <immintrin.h>
+#include <array>
+#include "lrnd_types.hpp"
+#include "lrnd_table.hpp"
 
-namespace zaitsev
+namespace lrnd
 {
-  using poly512 = std::bitset< 512 >;
-  using poly256 = std::bitset< 256 >;
-
   class lrnd32_opt
   {
   public:
@@ -25,23 +23,55 @@ namespace zaitsev
     static unsigned int min() noexcept;
     result_type operator()() noexcept;
     result_type operator()(bool) noexcept;
-    result_type operator()(int) noexcept;
+    inline result_type operator()(int) noexcept;
+    result_type operator()(char) noexcept;
     void seed(size_t seed);
     void discard(size_t seed);
-
+  protected:
+    const std::array< u64_t, 256 >& compressed_mod_poly_ull_ = lrnd::table::compressed_steps;
   private:
+    using ull = unsigned long long;
     static constexpr size_t basic_offset_ = 183758644ull;
-    static const poly512 mod_poly512_;
-    static const poly256 mod_poly256_;
+    static const poly512_t mod_poly512_;
+    static const poly256_t mod_poly256_;
     static const std::array< unsigned short, 3 > mod_poly_us_;
     static const unsigned long long mod_poly_ull_;
     static const std::array< std::array< unsigned short, 3 >, 65536 >* compressed_mod_poly_us_;
-    static const std::array< unsigned long long, 256 >* compressed_mod_poly_ull_;
-    static const std::array< poly512, 256 > deg2_;
-    poly256 poly_;
+    //static const std::array< ull, 256 >* compressed_mod_poly_ull_;
+    static const std::array< poly512_t, 256 > deg2_;
+    poly256_t poly_;
     unsigned short poly_us_[16];
-    unsigned long long poly_ull_[4];
+    ull poly_ull_[4];
     result_type generated_number_;
   };
 }
+
+inline unsigned int lrnd::lrnd32_opt::operator()(int) noexcept
+{
+  generated_number_ = poly_ull_[0] >> 32;
+  u8_t compressed_nmb = u8_t{ poly_ull_[0] >> 56 };
+  u64_t temp0 = compressed_mod_poly_ull_[compressed_nmb] << 24;
+  compressed_nmb = u8_t{ (poly_ull_[0] >> 48) & 0xff };
+  u64_t temp1 = compressed_mod_poly_ull_[compressed_nmb] << 16;
+  compressed_nmb = u8_t{ (poly_ull_[0] >> 40) & 0xff };
+  u64_t temp2 = compressed_mod_poly_ull_[compressed_nmb] << 8;
+  compressed_nmb = u8_t{ (poly_ull_[0] >> 32) & 0xff };
+  u64_t temp3 = compressed_mod_poly_ull_[compressed_nmb];
+
+
+  poly_ull_[0] <<= 32;
+  poly_ull_[0] |= poly_ull_[1] >> 32;
+  poly_ull_[1] <<= 32;
+  poly_ull_[1] |= poly_ull_[2] >> 32;
+  poly_ull_[2] <<= 32;
+  poly_ull_[2] |= poly_ull_[3] >> 32;
+  poly_ull_[3] <<= 32;
+
+  poly_ull_[3] ^= temp0;
+  poly_ull_[3] ^= temp1;
+  poly_ull_[3] ^= temp2;
+  poly_ull_[3] ^= temp3;
+  return generated_number_;
+}
+
 #endif
