@@ -12,4 +12,4 @@ namespace lrnd
   using poly512_t = std::bitset< 512 >;
   using poly256_t = std::bitset< 256 >;
 }
-#endif // !LRND_TYPES_HPP
+#endif
