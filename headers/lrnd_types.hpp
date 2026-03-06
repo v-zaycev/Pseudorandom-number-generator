@@ -14,7 +14,6 @@ namespace lrnd
   using poly512_t = std::bitset< 512 >;
   using poly256_t = std::bitset< 256 >;
 
-
   template<typename T>
   concept RandomNumberType =
     std::unsigned_integral<T> &&
@@ -24,5 +23,8 @@ namespace lrnd
       sizeof(T) == 8) ||
     std::is_same_v<T, float> ||
     std::is_same_v<T, double>;
+
+  template<typename T, size_t N>
+  concept HasSize = sizeof(T) == N;
 }
 #endif

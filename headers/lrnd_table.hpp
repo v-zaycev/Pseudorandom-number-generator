@@ -62,9 +62,9 @@ namespace lrnd::table
     }
 
   }
-  inline constexpr u64_t poly64 = detail::form_mod_poly64();
-  inline constexpr poly256_t poly256 = detail::form_mod_poly< 256 >();
-  inline constexpr poly512_t poly512 = detail::form_mod_poly< 512 >();
+  inline constexpr u64_t mod_poly64 = detail::form_mod_poly64();
+  inline constexpr poly256_t mod_poly256 = detail::form_mod_poly< 256 >();
+  inline constexpr poly512_t mod_poly512 = detail::form_mod_poly< 512 >();
   inline constexpr std::array<u64_t, 256> compressed_steps = detail::calc_compressed_steps();
   inline constexpr std::array<poly512_t, 256> deg2 = detail::calc_deg2();
 }
