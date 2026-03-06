@@ -13,6 +13,19 @@ namespace lrnd::table
       constexpr u64_t one = 1;
       return (one << 0) | (one << 3) | (one << 7) | (one << 31);
     }
+   
+    template < size_t N >
+    constexpr std::bitset< N > form_mod_poly() noexcept
+    {
+      static_assert(N >= 256, "Invalid poly size, size must be 256 or greater");
+      std::bitset< N > mod_poly;
+      mod_poly[0] = 1;
+      mod_poly[3] = 1;
+      mod_poly[7] = 1;
+      mod_poly[31] = 1;
+      mod_poly[255] = 1;
+      return mod_poly;
+    }
 
     constexpr std::array<u64_t, 256> calc_compressed_steps() noexcept
     {
@@ -47,10 +60,13 @@ namespace lrnd::table
         }
         return deg2;
     }
-  }
 
+  }
+  inline constexpr u64_t poly64 = detail::form_mod_poly64();
+  inline constexpr poly256_t poly256 = detail::form_mod_poly< 256 >();
+  inline constexpr poly512_t poly512 = detail::form_mod_poly< 512 >();
   inline constexpr std::array<u64_t, 256> compressed_steps = detail::calc_compressed_steps();
-  inline constexpr std::array<poly512_t, 256> deg2;
+  inline constexpr std::array<poly512_t, 256> deg2 = detail::calc_deg2();
 }
 
 #endif
