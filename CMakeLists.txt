@@ -1,0 +1,23 @@
+cmake_minimum_required(VERSION 3.10)
+
+set(CMAKE_CXX_STANDARD 23)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+project(MyProject)
+
+file(GLOB SOURCES "sources/*.cpp")
+file(GLOB HEADERS "headers/*.hpp")
+
+add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
+
+target_include_directories(${PROJECT_NAME} PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/headers
+)
+
+source_group("Source Files" FILES ${SOURCES})
+source_group("Header Files" FILES ${HEADERS})
+
+message(STATUS "Project: ${PROJECT_NAME}")
+message(STATUS "Sources: ${SOURCES}")
+message(STATUS "Headers: ${HEADERS}")
