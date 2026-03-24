@@ -9,14 +9,15 @@ namespace lrnd
 {
   namespace detail 
   {
-    inline poly256_t to_bitset(const std::array<u64_t, 4>& poly)
+    template< typename T >
+    inline T to_bitset(const std::array<u64_t, 4>& poly)
     {
-      poly256_t res_poly;
+      T res_poly;
 
-      for (auto i : poly)
+      for (u64_t i : poly)
       {
         res_poly <<= 64;
-        res_poly ^= poly256_t(i);
+        res_poly ^= T(i);
       }
       return res_poly;
     }
@@ -39,7 +40,7 @@ namespace lrnd
       }
     }
 
-    constexpr poly512_t mod_mult(const poly512_t& poly1, const poly512_t& poly2) noexcept
+    constexpr poly512_t mod_mult(const poly512_t& poly1, const poly512_t& poly2)
     {
       poly512_t res_poly{};
       for (size_t i = 0; i < 256; ++i)

@@ -24,15 +24,15 @@ namespace lrnd
     }
 
     template < size_t N >
-    constexpr std::bitset< N > form_mod_poly() noexcept
+    constexpr std::bitset< N > form_mod_poly()
     {
       static_assert(N >= 256, "Invalid poly size, size must be 256 or greater");
       std::bitset< N > mod_poly;
-      mod_poly[0] = 1;
-      mod_poly[3] = 1;
-      mod_poly[7] = 1;
-      mod_poly[31] = 1;
-      mod_poly[255] = 1;
+      mod_poly.set(0);
+      mod_poly.set(3);
+      mod_poly.set(7);
+      mod_poly.set(31);
+      mod_poly.set(255);
       return mod_poly;
     }
   }

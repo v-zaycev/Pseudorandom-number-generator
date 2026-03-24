@@ -15,6 +15,13 @@ target_include_directories(${PROJECT_NAME} PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/headers
 )
 
+if(MSVC)
+    target_compile_options(${PROJECT_NAME} PRIVATE 
+        /constexpr:steps2000000
+        /constexpr:depth1024
+    )
+endif()
+
 source_group("Source Files" FILES ${SOURCES})
 source_group("Header Files" FILES ${HEADERS})
 

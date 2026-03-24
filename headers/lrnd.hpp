@@ -5,16 +5,23 @@
 
 namespace lrnd
 {
-  template< typename T >
+  template< RandomNumberType T >
   class lrnd : protected lrnd_base
   {
   public:
-    lrnd() = default;
+    lrnd() :
+      lrnd_base()
+    {
+      lrnd_base::discard< sizeof(T) >(42);
+    }
+      
     lrnd(lrnd&& other_) = default;
     lrnd(const lrnd& other_) = default;
     explicit lrnd(size_t seed):
-      lrnd_base(seed)
-    {};
+      lrnd_base()
+    {
+      lrnd_base::discard< sizeof(T) >(seed);
+    }
     lrnd& operator=(lrnd&& other_) = default;
     lrnd& operator=(const lrnd& other_) = default;
     ~lrnd() = default;
