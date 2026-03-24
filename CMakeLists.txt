@@ -6,13 +6,13 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 project(MyProject)
 
-file(GLOB SOURCES "sources/*.cpp")
-file(GLOB HEADERS "headers/*.hpp")
+file(GLOB SOURCES "src/*.cpp")
+file(GLOB HEADERS "include/*.hpp")
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
 
 target_include_directories(${PROJECT_NAME} PUBLIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/headers
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
 if(MSVC)
