@@ -74,6 +74,7 @@ cmake --build . --config Release
 ## 📝 TODO
 
 - [ ] Add statistical tests (Dieharder, TestU01)
+- [ ] Improve the API to better match generators from `std`
 - [ ] Improve documentation with examples
 - [ ] Add CMake package config
 - [ ] Add PyBind wrapper
