@@ -25,6 +25,15 @@ endif()
 source_group("Source Files" FILES ${SOURCES})
 source_group("Header Files" FILES ${HEADERS})
 
+# ========== ДОБАВИТЬ ЭТО ==========
+# Опция для сборки тестов (по умолчанию ВЫКЛЮЧЕНА)
+option(BUILD_TESTS "Build tests" OFF)
+
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
+# =================================
+
 message(STATUS "Project: ${PROJECT_NAME}")
 message(STATUS "Sources: ${SOURCES}")
 message(STATUS "Headers: ${HEADERS}")
