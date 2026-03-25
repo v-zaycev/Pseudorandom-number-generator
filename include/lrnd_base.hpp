@@ -33,7 +33,7 @@ namespace lrnd
   };
 
   template<>
-  inline u8_t lrnd_base::operator()< u8_t >()
+  inline u8_t lrnd_base::operator()< u8_t >() noexcept
   {
     u8_t generated_number_ = poly_[0] >> 56; //старшие 8 бит
     // u8_t compressed_nmb = u8_t{ poly_[0] >> 56 };
@@ -52,7 +52,7 @@ namespace lrnd
   }
 
   template<>
-  inline u16_t lrnd_base::operator()< u16_t >()
+  inline u16_t lrnd_base::operator()< u16_t >() noexcept
   {
     u16_t generated_number_ = poly_[0] >> 48;
     u8_t compressed_nmb = u8_t{ poly_[0] >> 56 };
@@ -74,7 +74,7 @@ namespace lrnd
   }
 
   template<>
-  inline u32_t lrnd_base::operator()< u32_t >()
+  inline u32_t lrnd_base::operator()< u32_t >() noexcept
   {
     u32_t generated_number_ = poly_[0] >> 32;
     u8_t compressed_nmb = u8_t{ poly_[0] >> 56 };
@@ -102,7 +102,7 @@ namespace lrnd
   }
 
   template<>
-  inline u64_t lrnd_base::operator()< u64_t >()
+  inline u64_t lrnd_base::operator()< u64_t >() noexcept
   {
     u64_t generated_number_ = poly_[0];
     u8_t compressed_nmb;
@@ -145,7 +145,7 @@ namespace lrnd
   }
 
   template<>
-  inline float lrnd_base::operator()< float >()
+  inline float lrnd_base::operator()< float >() noexcept
   {
     union {
       uint32_t u;
@@ -159,7 +159,7 @@ namespace lrnd
   }
 
   template<>
-  inline double lrnd_base::operator()< double >()
+  inline double lrnd_base::operator()< double >() noexcept
   {
     union {
       uint64_t u;

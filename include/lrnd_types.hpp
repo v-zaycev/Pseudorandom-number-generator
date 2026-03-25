@@ -55,8 +55,25 @@ namespace lrnd
     std::is_same_v<T, float> ||
     std::is_same_v<T, double>;
 
-  template<typename T, size_t N>
-  concept HasSize = (sizeof(T) == N);
+  template<typename T>
+  concept Unsigned8Type =
+    std::unsigned_integral<T> &&
+    (sizeof(T) == 1);
+
+  template<typename T>
+  concept Unsigned16Type =
+    std::unsigned_integral<T> &&
+    (sizeof(T) == 2);
+
+  template<typename T>
+  concept Unsigned32Type =
+    std::unsigned_integral<T> &&
+    (sizeof(T) == 4);
+
+  template<typename T>
+  concept Unsigned64Type =
+    std::unsigned_integral<T> &&
+    (sizeof(T) == 8);
 
 }
 #endif
