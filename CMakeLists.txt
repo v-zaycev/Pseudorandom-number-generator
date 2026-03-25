@@ -4,9 +4,9 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-project(MyProject)
+project(ExampleProject)
 
-file(GLOB SOURCES "src/*.cpp")
+file(GLOB SOURCES "examples/*.cpp")
 file(GLOB HEADERS "include/*.hpp")
 
 add_executable(${PROJECT_NAME} ${SOURCES} ${HEADERS})
@@ -25,14 +25,11 @@ endif()
 source_group("Source Files" FILES ${SOURCES})
 source_group("Header Files" FILES ${HEADERS})
 
-# ========== ДОБАВИТЬ ЭТО ==========
-# Опция для сборки тестов (по умолчанию ВЫКЛЮЧЕНА)
 option(BUILD_TESTS "Build tests" OFF)
 
 if(BUILD_TESTS)
     add_subdirectory(tests)
 endif()
-# =================================
 
 message(STATUS "Project: ${PROJECT_NAME}")
 message(STATUS "Sources: ${SOURCES}")
