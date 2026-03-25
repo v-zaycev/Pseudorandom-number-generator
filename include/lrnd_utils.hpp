@@ -1,3 +1,7 @@
+// lrnd_base.hpp
+// Copyright (c) 2025 Vladimir Zaitsev
+// SPDX-License-Identifier: MIT
+
 #ifndef LRND_UTILS_HPP
 #define LRND_UTILS_HPP
 
@@ -50,7 +54,7 @@ namespace lrnd
           res_poly ^= poly2 << i;
         }
       }
-      for (size_t i = 511; i > 254; --i)
+      for (size_t i = 511; i > 255; --i)
       {
         if (res_poly[i])
         {

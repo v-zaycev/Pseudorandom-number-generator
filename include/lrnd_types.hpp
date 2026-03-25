@@ -1,3 +1,7 @@
+// lrnd_base.hpp
+// Copyright (c) 2025 Vladimir Zaitsev
+// SPDX-License-Identifier: MIT
+
 #ifndef LRND_TYPES_HPP
 #define LRND_TYPES_HPP
 #include <concepts>

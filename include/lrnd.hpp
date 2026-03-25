@@ -1,3 +1,7 @@
+// lrnd.hpp
+// Copyright (c) 2026 Vladimir Zaitsev
+// SPDX-License-Identifier: MIT
+
 #ifndef LRND_HPP
 #define LRND_HPP
 
@@ -12,22 +16,22 @@ namespace lrnd
     lrnd() :
       lrnd_base()
     {
-      lrnd_base::discard< sizeof(T) >(42);
+      seed(42);
     }
       
     lrnd(lrnd&& other_) = default;
     lrnd(const lrnd& other_) = default;
-    explicit lrnd(size_t seed):
+    explicit lrnd(size_t seed_):
       lrnd_base()
     {
-      lrnd_base::discard< sizeof(T) >(seed);
+      seed(seed_);
     }
     lrnd& operator=(lrnd&& other_) = default;
     lrnd& operator=(const lrnd& other_) = default;
     ~lrnd() = default;
 
     inline T operator()() noexcept { return lrnd_base::operator()< T >(); }
-    void seed(size_t seed) { lrnd_base::discard< sizeof(T) >(seed + 1, lrnd::basic_offset_); }
+    void seed(size_t seed) { lrnd_base::discard< sizeof(T) >(seed, lrnd::basic_offset_); }
     void discard(size_t shift) { lrnd_base::discard< sizeof(T) >(shift); }
   };
 }

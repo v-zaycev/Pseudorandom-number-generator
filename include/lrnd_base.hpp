@@ -1,3 +1,7 @@
+// lrnd_base.hpp
+// Copyright (c) 2025 Vladimir Zaitsev
+// SPDX-License-Identifier: MIT
+
 #ifndef LRND_BASE_HPP
 #define LRND_BASE_HPP
 #include <bit>
@@ -13,7 +17,6 @@ namespace lrnd
     lrnd_base() = default;
     lrnd_base(lrnd_base&& other_) = default;
     lrnd_base(const lrnd_base& other_) = default;
-    explicit lrnd_base(size_t seed);
     lrnd_base& operator=(lrnd_base&& other_) = default;
     lrnd_base& operator=(const lrnd_base& other_) = default;
     ~lrnd_base() = default;
@@ -24,7 +27,7 @@ namespace lrnd
     inline T operator()() noexcept;
     template< size_t  N >
     void discard(size_t shift, size_t basic_offset = 1);
-  private:
+  protected:
     static constexpr size_t basic_offset_ = 183758644ull;
     std::array< u64_t, 4 > poly_ = { 0, 0, 0, 1 };
   };
@@ -144,19 +147,40 @@ namespace lrnd
   template<>
   inline float lrnd_base::operator()< float >()
   {
+    union {
+      uint32_t u;
+      float f;
+    } converter;
+
     u32_t rnd_nmb = this->operator()< u32_t >();
+    converter.u = (rnd_nmb >> 9) | 0x3F800000;
+    return converter.f - 1.0f;
+
   }
 
   template<>
   inline double lrnd_base::operator()< double >()
   {
+    union {
+      uint64_t u;
+      double d;
+    } converter;
+
     u64_t rnd_nmb = this->operator() < u64_t > ();
+    converter.u = (rnd_nmb >> 11) | 0x3FF0000000000000ULL;
+    return converter.d - 1.0;
   }
 
   template<size_t N>
   void lrnd_base::discard(size_t shift, size_t basic_offset)
   {
     size_t item_shift = std::bit_width(N * 8) - 1; //8=2^3 но 1000 т.е ширина равна 4
+
+    if (basic_offset > 1)
+    {
+      poly_ = { 0, 0, 0, 1 };
+    }
+
     poly512_t res_poly = detail::to_bitset< poly512_t >(poly_);
     poly256_t offset = poly256_t(shift) << item_shift; // нужное число смещений как число элементов на размер элемента
     for (size_t j = 0; basic_offset != 0; ++j, basic_offset >>= 1) //перебираем биты basic_offset т.к. базовое число смещений при умноже 
