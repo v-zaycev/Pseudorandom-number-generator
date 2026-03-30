@@ -7,7 +7,7 @@ Header-only C++23 library for random number generation based on LFSR. Supports 8
 
 ## 📖 Description
 
-The generator is based on linear feedback shift registers (LFSR) over GF(2^256). 
+The generator is based on linear feedback shift registers (LFSR) over GF(2^255). 
 Key properties:
 - Period: 2^255 - 1
 - Discard complexity: O(log n)
